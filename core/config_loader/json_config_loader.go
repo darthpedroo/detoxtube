@@ -1,30 +1,32 @@
 package core
 
 import (
+	"encoding/json"
+	"fmt"
+	"os"
+
 	"github.com/darthpedroo/detoxtube/types"
-	//"encoding/json"
-	)
+)
 
 type JsonConfigLoader struct {
 
 }
 
 	
-func (c *JsonConfigLoader) LoadConfig() types.Config{
+func (c *JsonConfigLoader) LoadConfig(configPath string) (*types.Config, error){
+	
+	content, err := os.ReadFile(configPath)
+    if err != nil {
+		return nil, fmt.Errorf("Error when loading config from json with path:  %v. \n Error: %v ", configPath, err)
+    }
 
-	loadedConfig := types.Config{
-		VideoPlayer: "mpv",
-		Channels: []types.Channel{
-			{
-				ChannelName: "Lawren Systems",
-				FeedUrl: "https://www.youtube.com/feeds/videos.xml?channel_id=UCHkYOD-3fZbuGhwsADBd9ZQ",
-			},
-			{
-				ChannelName: "Ken",
-				FeedUrl: "https://www.youtube.com/feeds/videos.xml?channel_id=UCiFOL6V9KbvxfXvzdFSsqCw",
-			},
-		},
+	var payload types.Config
+
+	err = json.Unmarshal(content, &payload)
+
+	if err != nil {
+		return nil, fmt.Errorf("Error unmarshaling json file")
 	}
 
-	return loadedConfig
+	return &payload, nil
 }

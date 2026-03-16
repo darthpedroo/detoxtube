@@ -8,4 +8,5 @@ import (
 type ConfigManager struct {
 	VideoLoader video_loader.VideosLoader
 	ConfigLoader config_loader.ConfigLoader
+	ConfigPath string
 }

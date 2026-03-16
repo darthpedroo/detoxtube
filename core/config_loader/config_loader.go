@@ -5,5 +5,5 @@ import "github.com/darthpedroo/detoxtube/types"
 
 
 type ConfigLoader interface{
-	LoadConfig() types.Config
+	LoadConfig(configPath string) (*types.Config, error)
 }

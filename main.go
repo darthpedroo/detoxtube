@@ -17,6 +17,7 @@ func main(){
 	configManager := core.ConfigManager{
 		VideoLoader: &videoLoader.GoFeedVideosLoader{},
 		ConfigLoader: &config_loader.JsonConfigLoader{},
+		ConfigPath: "config.json",
 	}
 
 	p := tea.NewProgram(models.InitialMainMenuModel(configManager))

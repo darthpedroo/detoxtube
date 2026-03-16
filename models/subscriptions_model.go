@@ -17,7 +17,16 @@ type SubscriptionsModel struct {
 }
 
 func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsModel{
-	config := configManager.ConfigLoader.LoadConfig()
+	
+	config , err := configManager.ConfigLoader.LoadConfig(configManager.ConfigPath)
+
+	if err != nil {
+		return SubscriptionsModel{
+			title: fmt.Sprintf("Error loading Config %v", err),
+			configManager: configManager,
+			subscriptions: nil,
+		}
+	}
 
 	return SubscriptionsModel{
 		title: "My Subscriptions",
