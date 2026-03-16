@@ -16,9 +16,9 @@ type FeedModel struct{
 	selected map[int]struct{}
 }
 
-func InitialFeedModel(configManager core.ConfigManager) FeedModel{
+func InitialFeedModel(configManager core.ConfigManager, feedUrl string) FeedModel{
 	
-	feed , err := configManager.VideoLoader.LoadFeed("https://www.youtube.com/feeds/videos.xml?channel_id=UCHkYOD-3fZbuGhwsADBd9ZQ")
+	feed , err := configManager.VideoLoader.LoadFeed(feedUrl)
 
 	if err != nil {
 		return FeedModel{
@@ -96,6 +96,9 @@ func (m FeedModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Batch(
 				utils.OpenInNewTerminal(InitialWatchingVideoModel(m.configManager), "mpv", currentVideo.Link),
 			)
+        
+        case "left":
+            return InitialSubscriptionsModel(m.configManager), nil
         }
     }
 

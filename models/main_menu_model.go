@@ -23,7 +23,7 @@ func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
 	options:= []types.Button{
 		{
 			Title: "Subscriptions",
-			Redirect: InitialFeedModel(configManager),
+			Redirect: InitialSubscriptionsModel(configManager),
 		},
 		{
 			Title: "Load RSS Feed",
