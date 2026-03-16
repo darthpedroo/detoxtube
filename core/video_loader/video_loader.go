@@ -7,6 +7,6 @@ import (
 
 type VideosLoader interface{
 	LoadFeed(feedUrl string) (*gofeed.Feed, error)
-	LoadVideos(feed *gofeed.Feed, maxVideos int) ([]types.Video, error)
 	LoadTitle(feed *gofeed.Feed) (string, error)
+	LoadVideos(feed *gofeed.Feed, maxVideos int) ([]types.Video, error)
 }

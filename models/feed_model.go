@@ -3,24 +3,26 @@ package models
 import (
 	"fmt"
 	"charm.land/bubbletea/v2"
-	"github.com/darthpedroo/detoxtube/core/video_loader"
+	core "github.com/darthpedroo/detoxtube/core"
 	"github.com/darthpedroo/detoxtube/types"
 	"github.com/darthpedroo/detoxtube/utils"
 )
 
 type FeedModel struct{
+    configManager core.ConfigManager
 	title string
 	videos []types.Video
 	cursor int
 	selected map[int]struct{}
 }
 
-func InitialFeedModel(VideoLoader core.VideosLoader) FeedModel{
+func InitialFeedModel(configManager core.ConfigManager) FeedModel{
 	
-	feed , err := VideoLoader.LoadFeed("https://www.youtube.com/feeds/videos.xml?channel_id=UCHkYOD-3fZbuGhwsADBd9ZQ")
+	feed , err := configManager.VideoLoader.LoadFeed("https://www.youtube.com/feeds/videos.xml?channel_id=UCHkYOD-3fZbuGhwsADBd9ZQ")
 
 	if err != nil {
 		return FeedModel{
+            configManager: configManager,
 			title: "Couldn't load feed",
 			videos: []types.Video{},
 			selected: make(map[int]struct{}),
@@ -28,16 +30,17 @@ func InitialFeedModel(VideoLoader core.VideosLoader) FeedModel{
 	}
 
 	var title string
-	title , err = VideoLoader.LoadTitle(feed)
+	title , err = configManager.VideoLoader.LoadTitle(feed)
 
 	if err != nil {
 		title = "default title"
 	}
 
-	initialVideos , err := VideoLoader.LoadVideos(feed, 10)
+	initialVideos , err := configManager.VideoLoader.LoadVideos(feed, 10)
 	
 	if err != nil {
 		return FeedModel{
+            configManager: configManager,
 			title: title + " warning, couldn't load videos",
 			videos: []types.Video{},
 			selected: make(map[int]struct{}),
@@ -45,6 +48,7 @@ func InitialFeedModel(VideoLoader core.VideosLoader) FeedModel{
 	}
 
 	return FeedModel{
+        configManager: configManager,
 		title: title,
 		videos: initialVideos,
 		selected: make(map[int]struct{}),
@@ -70,7 +74,7 @@ func (m FeedModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         switch msg.String() {
         
         // These keys should exit the program.
-        case "ctrl+c", "q":
+         case "ctrl+c", "q":
             return m, tea.Quit
 
         // The "up" and "k" keys move the cursor up
@@ -90,7 +94,7 @@ func (m FeedModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         case "enter", "space":
 			currentVideo := m.videos[m.cursor]
 			return m, tea.Batch(
-				utils.OpenInNewTerminal(WatchingVideoModel{}, "mpv", currentVideo.Link),
+				utils.OpenInNewTerminal(InitialWatchingVideoModel(m.configManager), "mpv", currentVideo.Link),
 			)
         }
     }
@@ -127,5 +131,7 @@ func (m FeedModel) View() tea.View {
     s += "\nPress q to quit.\n"
 
     // Send the UI for rendering
-    return tea.NewView(s)
+    view := tea.NewView(s)
+	view.AltScreen = true
+	return view
 }

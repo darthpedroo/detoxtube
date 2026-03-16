@@ -2,12 +2,11 @@ package core
 
 import (
 	"fmt"
-	"github.com/mmcdole/gofeed"
 	"github.com/darthpedroo/detoxtube/types"
+	"github.com/mmcdole/gofeed"
 )
 
-type GoFeedVideosLoader struct{
-
+type GoFeedVideosLoader struct {
 }
 
 func (g *GoFeedVideosLoader) LoadFeed(feedUrl string) (*gofeed.Feed, error) {
@@ -19,23 +18,22 @@ func (g *GoFeedVideosLoader) LoadFeed(feedUrl string) (*gofeed.Feed, error) {
 	return feed, nil
 }
 
-func (g *GoFeedVideosLoader) LoadTitle(feed *gofeed.Feed) (string, error){
+func (g *GoFeedVideosLoader) LoadTitle(feed *gofeed.Feed) (string, error) {
 	return feed.Title, nil
 }
 
 func (g *GoFeedVideosLoader) LoadVideos(feed *gofeed.Feed, maxVideos int) ([]types.Video, error) {
 	var fetchedVideos []types.Video
 	var loadedViedos int
-	for _, item := range feed.Items{
+	for _, item := range feed.Items {
 		newVideo := types.Video{
 			item.Title,
-			item.Link,}
+			item.Link}
 		fetchedVideos = append(fetchedVideos, newVideo)
-		loadedViedos+=1
-		if loadedViedos == maxVideos{
+		loadedViedos += 1
+		if loadedViedos == maxVideos {
 			break
 		}
-		}
-	return fetchedVideos, nil 
+	}
+	return fetchedVideos, nil
 }
-	

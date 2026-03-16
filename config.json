@@ -1,0 +1,9 @@
+{
+    "player": "mpv",
+    "feeds": [
+        {
+            "channel": "Lawrence Systems",
+            "feedUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHkYOD-3fZbuGhwsADBd9ZQ"
+        }
+    ]
+}

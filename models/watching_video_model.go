@@ -2,14 +2,19 @@
 // This is a boilerplate model to copy and paste
 package models
 
-import tea "charm.land/bubbletea/v2"
+import (
+	tea "charm.land/bubbletea/v2"
+	"github.com/darthpedroo/detoxtube/core"
+)
 
 type WatchingVideoModel struct {
-
+	configManager core.ConfigManager
 }
 
-func InitialWatchingVideoModel() BoilerplateModel{
-	return BoilerplateModel{}
+func InitialWatchingVideoModel(configManager core.ConfigManager) WatchingVideoModel{
+	return WatchingVideoModel{
+		configManager: configManager,
+	}
 }
 
 func (m WatchingVideoModel) Init() tea.Cmd{
@@ -21,7 +26,7 @@ func (m WatchingVideoModel) Update(msg tea.Msg) (tea.Model, tea.Cmd){
 		case tea.KeyPressMsg:
 			switch msg.String() {
 			case "q":
-				return BoilerplateModel{}, nil
+				return InitialMainMenuModel(m.configManager), tea.ClearScreen
 			}
 	}
 	return m, nil
@@ -29,5 +34,7 @@ func (m WatchingVideoModel) Update(msg tea.Msg) (tea.Model, tea.Cmd){
 
 func (m WatchingVideoModel) View() tea.View{
 	title := "You are currently watching a Video! Press 'q' to go back"
-	return tea.NewView(title)
+	view := tea.NewView(title)
+	view.AltScreen = true
+	return view
 }
