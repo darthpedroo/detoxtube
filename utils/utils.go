@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+	"strings"
+
 	"charm.land/bubbletea/v2"
 )
 
@@ -28,4 +31,11 @@ func OpenInNewTerminal(returnModel tea.Model, app string, args ...string) tea.Cm
         
         return returnModel
     }
+}
+
+func CreateRssFeedFromChannelId(channelId string)(rssFeed string){
+	//https://stackoverflow.com/questions/19795987/youtube-channel-and-playlist-id-prefixes/77816885#77816885
+
+	newChannelId := strings.TrimPrefix(channelId, "UC")
+	return fmt.Sprintf("https://www.youtube.com/feeds/videos.xml?playlist_id=UULF%v",newChannelId) 
 }

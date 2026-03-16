@@ -5,14 +5,19 @@
 This are the Models that should be implemented
 
 ### MainMenu Model
-- [] Subscriptions Button
-- [] Load RSS Button
+- [x] Subscriptions Button
+- [x] Load RSS Button
+
+#### Load RSS
+
+- [x] Make an input that asks for channelid and channelname and saves it into the configuration.
+    - [Source](https://github.com/charmbracelet/bubbletea/blob/main/examples/textinput/main.go)
 
 ### Subscriptions Model
 
-- [] Browse through the Subscriptions
+- [x] Browse through the Subscriptions
 - [] Order By Name (asc, desc)
-- [] Pagination
+- [] [Pagination](https://github.com/charmbracelet/bubbletea/tree/main/examples/paginator)
 
 ### Feed Model
 
@@ -21,6 +26,6 @@ This are the Models that should be implemented
 
 
 ## Storage
-- [] store subscriptions into a file
+- [x] store subscriptions into a file
 - [] load that file from custom path (it can be loaded from dotfiles)  
 - [] implement a singleton to access the RSS data, the videos should only be fetched once and then you fetch it from "cache".

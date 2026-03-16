@@ -27,7 +27,7 @@ func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
 		},
 		{
 			Title: "Load RSS Feed",
-			Redirect: InitialBoilerplateModel(configManager),
+			Redirect: InitialLoadRssFeedModel(configManager),
 		},
 	}
 

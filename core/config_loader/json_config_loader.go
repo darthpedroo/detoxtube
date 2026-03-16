@@ -30,3 +30,27 @@ func (c *JsonConfigLoader) LoadConfig(configPath string) (*types.Config, error){
 
 	return &payload, nil
 }
+
+func (c *JsonConfigLoader) AddChannel(configPath string, channel types.Channel) error {
+
+	data , err := c.LoadConfig(configPath)
+
+	if err != nil {
+		return err
+	}
+
+	data.Channels = append(data.Channels, channel)
+
+	dataBytes, err := json.Marshal(data)
+
+	if err != nil {
+		return fmt.Errorf("Error Adding Channel to json file")
+	}
+
+	err = os.WriteFile(configPath, dataBytes,0644)
+
+	if err != nil {
+		return fmt.Errorf("Error writing to file %v", configPath)
+	}
+	return nil
+}
