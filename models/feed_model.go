@@ -2,7 +2,9 @@ package models
 
 import (
 	"fmt"
+    "strings"
 	"charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	core "github.com/darthpedroo/detoxtube/core"
 	"github.com/darthpedroo/detoxtube/types"
 	"github.com/darthpedroo/detoxtube/utils"
@@ -49,7 +51,7 @@ func InitialFeedModel(configManager core.ConfigManager, feedUrl string) FeedMode
 
 	return FeedModel{
         configManager: configManager,
-		title: title,
+		title: "Select a video:",
 		videos: initialVideos,
 		selected: make(map[int]struct{}),
 	}
@@ -108,33 +110,35 @@ func (m FeedModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m FeedModel) View() tea.View {
-    // The header
-    s := m.title + "\n"
+    var cardStyle = lipgloss.NewStyle().
+        Foreground(lipgloss.Color("#FAFAFA")).
+        Background(lipgloss.Color("#000100"))
+
+    var selectedStyle = cardStyle.
+        Background(lipgloss.Color("#454444")) // Different color for cursor
+
+    var titleStyle = lipgloss.NewStyle().
+        Blink(true).
+        Bold(true)
+    
+    doc := strings.Builder{}
+    doc.WriteString(titleStyle.Render(m.title)+"\n"+"\n")
 
     // Iterate over our choices
-    for i, choice := range m.videos {
+    for i, video := range m.videos {
 
-        // Is the cursor pointing at this choice?
-        cursor := " " // no cursor
+        style := cardStyle
+        style.Width(len(video.Title))
         if m.cursor == i {
-            cursor = ">" // cursor!
+            style = selectedStyle
         }
-
-        // Is this choice selected?
-        checked := " " // not selected
-        if _, ok := m.selected[i]; ok {
-            checked = "x" // selected!
-        }
-
-        // Render the row
-        s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice.Title)
+        cardContent := fmt.Sprintf("%v) %s",i+1, video.Title)
+        doc.WriteString(style.Render(cardContent)+"\n")
     }
 
     // The footer
-    s += "\nPress q to quit.\n"
-
-    // Send the UI for rendering
-    view := tea.NewView(s)
+    doc.WriteString("\n Press q to quit.\n")
+    view := tea.NewView(doc.String())
 	view.AltScreen = true
 	return view
 }
