@@ -38,7 +38,7 @@ func InitialFeedModel(configManager core.ConfigManager, feedUrl string) FeedMode
 		title = "default title"
 	}
 
-	initialVideos , err := configManager.VideoLoader.LoadVideos(feed, 10)
+	initialVideos , err := configManager.VideoLoader.LoadVideos(feed, 15)
 	
 	if err != nil {
 		return FeedModel{

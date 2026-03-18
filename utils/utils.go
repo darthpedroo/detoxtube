@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
 
 	"charm.land/bubbletea/v2"
+	"github.com/darthpedroo/detoxtube/types"
 )
 
 func OpenApp(returnModel tea.Model, app string, args ...string) tea.Cmd {
@@ -38,4 +40,22 @@ func CreateRssFeedFromChannelId(channelId string)(rssFeed string){
 
 	newChannelId := strings.TrimPrefix(channelId, "UC")
 	return fmt.Sprintf("https://www.youtube.com/feeds/videos.xml?playlist_id=UULF%v",newChannelId) 
+}
+
+func SortSubscriptions(subscriptions []types.Channel, videoSort types.VideoSort, order types.Order) (sortedSubscriptions []types.Channel) {
+    if videoSort == types.Alphabetically {
+        sort.Slice(subscriptions, func(i, j int) bool {
+            titleI := strings.ToLower(subscriptions[i].ChannelName)
+            titleJ := strings.ToLower(subscriptions[j].ChannelName)
+            
+            if order == types.Descending {
+                return titleI > titleJ
+            }
+            return titleI < titleJ
+        })
+
+		return subscriptions
+    } else {
+		return subscriptions
+	}
 }

@@ -3,9 +3,11 @@ package models
 
 import (
 	"fmt"
+
 	tea "charm.land/bubbletea/v2"
 	core "github.com/darthpedroo/detoxtube/core"
 	"github.com/darthpedroo/detoxtube/types"
+	"github.com/darthpedroo/detoxtube/utils"
 )
 
 type SubscriptionsModel struct {
@@ -14,6 +16,8 @@ type SubscriptionsModel struct {
 	subscriptions []types.Channel
 	cursor int
 	selected map[int]struct{}
+	videoSort types.VideoSort
+	order 	types.Order
 }
 
 func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsModel{
@@ -70,7 +74,9 @@ func (m SubscriptionsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd){
 func (m SubscriptionsModel) View() tea.View{
 	title := m.title + "\n"
 
-	for i, channel := range m.subscriptions{
+	sortedSubscriptions := utils.SortSubscriptions(m.subscriptions, types.Alphabetically, types.Descending)
+
+	for i, channel := range sortedSubscriptions{
 		cursor := " " // no cursor
         if m.cursor == i {
             cursor = ">" // cursor!
