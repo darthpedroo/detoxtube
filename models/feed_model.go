@@ -25,7 +25,7 @@ func InitialFeedModel(configManager core.ConfigManager, feedUrl string) FeedMode
 	if err != nil {
 		return FeedModel{
             configManager: configManager,
-			title: "Couldn't load feed",
+			title: fmt.Sprintf("Couldn't load feed %v", err),
 			videos: []types.Video{},
 			selected: make(map[int]struct{}),
 		}
