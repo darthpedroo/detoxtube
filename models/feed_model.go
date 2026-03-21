@@ -2,9 +2,9 @@ package models
 
 import (
 	"fmt"
-    "strings"
+	"strings"
+
 	"charm.land/bubbletea/v2"
-	"charm.land/lipgloss/v2"
 	core "github.com/darthpedroo/detoxtube/core"
 	"github.com/darthpedroo/detoxtube/types"
 	"github.com/darthpedroo/detoxtube/utils"
@@ -16,18 +16,20 @@ type FeedModel struct{
 	videos []types.Video
 	cursor int
 	selected map[int]struct{}
+    footer FooterModel
 }
 
 func InitialFeedModel(configManager core.ConfigManager, feedUrl string) FeedModel{
 	
 	feed , err := configManager.VideoLoader.LoadFeed(feedUrl)
-
+    footer := InitialFooterModel(configManager)
 	if err != nil {
 		return FeedModel{
             configManager: configManager,
 			title: fmt.Sprintf("Couldn't load feed %v", err),
 			videos: []types.Video{},
 			selected: make(map[int]struct{}),
+            footer: footer,
 		}
 	}
 
@@ -46,6 +48,7 @@ func InitialFeedModel(configManager core.ConfigManager, feedUrl string) FeedMode
 			title: title + " warning, couldn't load videos",
 			videos: []types.Video{},
 			selected: make(map[int]struct{}),
+            footer: footer,
 		}
 	}
 
@@ -54,6 +57,7 @@ func InitialFeedModel(configManager core.ConfigManager, feedUrl string) FeedMode
 		title: "Select a video:",
 		videos: initialVideos,
 		selected: make(map[int]struct{}),
+        footer: InitialFooterModel(configManager),
 	}
 }
 
@@ -110,35 +114,22 @@ func (m FeedModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m FeedModel) View() tea.View {
-    var cardStyle = lipgloss.NewStyle().
-        Foreground(lipgloss.Color("#FAFAFA")).
-        Background(lipgloss.Color("#000100"))
-
-    var selectedStyle = cardStyle.
-        Background(lipgloss.Color("#454444")) // Different color for cursor
-
-    var titleStyle = lipgloss.NewStyle().
-        Blink(true).
-        Bold(true)
-    
     doc := strings.Builder{}
-    doc.WriteString(titleStyle.Render(m.title)+"\n"+"\n")
+    doc.WriteString(m.configManager.Styles.TitleStyle.TitleStyle.Render(m.title)+"\n"+"\n")
 
     // Iterate over our choices
     for i, video := range m.videos {
 
-        style := cardStyle
+        style := m.configManager.Styles.ListItemStyle.CardStyle
         style.Width(len(video.Title))
         if m.cursor == i {
-            style = selectedStyle
+            style = m.configManager.Styles.ListItemStyle.SelectedStyle
         }
         cardContent := fmt.Sprintf("%v) %s",i+1, video.Title)
         doc.WriteString(style.Render(cardContent)+"\n")
     }
 
-    // The footer
-    doc.WriteString("\n Press q to quit.\n")
-    view := tea.NewView(doc.String())
+    view := tea.NewView(doc.String()+"\n"+m.footer.View())
 	view.AltScreen = true
 	return view
 }

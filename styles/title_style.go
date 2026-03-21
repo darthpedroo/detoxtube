@@ -11,7 +11,7 @@ func NewTitleStyle() *TitleStyle{
 	titleStyle := lipgloss.NewStyle().
         Blink(true).
         Bold(true).
-		Margin(0).
+		MarginLeft(2).
 		Padding(0)
 
 	return &TitleStyle{

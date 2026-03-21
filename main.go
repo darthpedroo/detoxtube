@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
+
 	tea "charm.land/bubbletea/v2"
 	core "github.com/darthpedroo/detoxtube/core"
-	videoLoader "github.com/darthpedroo/detoxtube/core/video_loader"
 	config_loader "github.com/darthpedroo/detoxtube/core/config_loader"
+	videoLoader "github.com/darthpedroo/detoxtube/core/video_loader"
+	"github.com/darthpedroo/detoxtube/styles"
+
 	//"github.com/darthpedroo/detoxtube/core"
 	"github.com/darthpedroo/detoxtube/models"
 )
@@ -18,6 +21,7 @@ func main(){
 		VideoLoader: &videoLoader.GoFeedVideosLoader{},
 		ConfigLoader: &config_loader.JsonConfigLoader{},
 		ConfigPath: "config.json",
+		Styles: styles.NewEntryPoint(),
 	}
 
 	p := tea.NewProgram(models.InitialMainMenuModel(configManager))

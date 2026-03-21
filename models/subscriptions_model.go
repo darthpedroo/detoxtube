@@ -20,7 +20,7 @@ type itemChannel struct{
 func (c itemChannel) FilterValue() string { return c.channel.ChannelName}
 
 type itemDelegate struct {
-	styles *styles.EntryPoint
+	styles styles.EntryPoint
 }
 
 func (d itemDelegate) Height() int                             { return 1 }
@@ -50,7 +50,6 @@ type SubscriptionsModel struct {
 	configManager core.ConfigManager
 	title string
 	list list.Model
-	listStyle list.Styles
 	videoSort types.VideoSort
 	order 	types.Order
 	footer FooterModel
@@ -78,12 +77,12 @@ func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsMo
 		items[i] = newItemChannel
 	}
 
-	styles := styles.NewEntryPoint()
-	delegate := itemDelegate{styles: &styles}
+	delegate := itemDelegate{styles: configManager.Styles}
 
 	l := list.New(items, delegate,300,20)
 	l.Title = "My Subscriptions"
-	l.Styles.Title = styles.TitleStyle.TitleStyle
+	l.Styles.Title = configManager.Styles.TitleStyle.TitleStyle.Margin(0)
+
 	l.Styles.PaginationStyle = l.Styles.PaginationStyle.Padding(0)
 	l.SetShowHelp(false)
 	l.SetShowStatusBar(false)
@@ -126,7 +125,7 @@ func (m SubscriptionsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m SubscriptionsModel) View() tea.View {
-    view := tea.NewView(m.list.View() +  "\n" + m.footer.View())
+    view := tea.NewView(m.list.View()+ "\n" + m.footer.View())
 	view.AltScreen = true
 	return view
 }

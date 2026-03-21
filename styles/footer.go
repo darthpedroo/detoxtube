@@ -12,13 +12,17 @@ type FooterStyle struct {
 func NewFooterStyle() *FooterStyle {
     return &FooterStyle{
         Background: lipgloss.NewStyle().
-            Background(ColorBg),
+            Background(ColorBg),            
            // Height(1),
         Key: lipgloss.NewStyle().
+            Background(ColorBg).
+            PaddingRight(2).
             Foreground(ColorPrimary).
             Bold(true),
             //Padding(0, 1),
         Desc: lipgloss.NewStyle().
+            Background(ColorBg).
+            PaddingRight(2).
             Foreground(ColorSelected),
     }
 }

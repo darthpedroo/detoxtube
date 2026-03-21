@@ -4,6 +4,7 @@ type EntryPoint struct{
 	ListItemStyle ListItemStyle
 	TitleStyle  TitleStyle
 	Footer 	FooterStyle
+	Terminal TerminalStyle
 }
 
 func NewEntryPoint() EntryPoint{
@@ -12,5 +13,6 @@ func NewEntryPoint() EntryPoint{
 		ListItemStyle: *NewListItemStyle(),
 		TitleStyle: *NewTitleStyle(),
 		Footer: *NewFooterStyle(),
+		Terminal: *NewTerminalStyle(),
 	}
 }

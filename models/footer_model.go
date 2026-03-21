@@ -25,17 +25,14 @@ func InitialFooterModel(configManager core.ConfigManager) FooterModel{
 func (f FooterModel) View() string {
 
     
-	row1 := lipgloss.JoinHorizontal(lipgloss.Top, f.styles.Footer.Key.Render("ENTER"), " ", f.styles.Footer.Desc.Render("select"))
-    row2 := lipgloss.JoinHorizontal(lipgloss.Top, f.styles.Footer.Key.Render("Q"), "     ", f.styles.Footer.Desc.Render("quit"))
-    row3 := lipgloss.JoinHorizontal(lipgloss.Top, f.styles.Footer.Key.Render("←"), "     ", f.styles.Footer.Desc.Render("back"))
+	row1 := lipgloss.JoinHorizontal(lipgloss.Top, f.styles.Footer.Key.Render("ENTER"), f.styles.Footer.Desc.Render("select"))
+    row2 := lipgloss.JoinHorizontal(lipgloss.Top, f.styles.Footer.Key.Render("Q"), f.styles.Footer.Desc.Render("quit"))
+    row3 := lipgloss.JoinHorizontal(lipgloss.Top, f.styles.Footer.Key.Render("←"), f.styles.Footer.Desc.Render("back"))
     content := lipgloss.JoinHorizontal(
         lipgloss.Left,
         row1,
-		"\t",
         row2,
-		"\t",
         row3,
-		"\t",
     )
 
 

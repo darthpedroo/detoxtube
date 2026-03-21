@@ -3,19 +3,55 @@ package models
 
 import (
 	"fmt"
+	"io"
 
+	"charm.land/bubbles/v2/list"
 	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	core "github.com/darthpedroo/detoxtube/core"
+	"github.com/darthpedroo/detoxtube/styles"
 	"github.com/darthpedroo/detoxtube/types"
 )
 
 
 
 type MainMenuModel struct {
-	title string
 	options []types.Button
-	cursor int
-	selected map[int]struct{}
+	list list.Model
+	footer FooterModel
+	width int
+	height int
+	configManger core.ConfigManager
+}
+
+type itemMenu struct {
+	button types.Button
+}
+
+func (i itemMenu) FilterValue() string {return i.button.Title}
+
+type itemMenuDelegate struct {
+	styles styles.EntryPoint
+}
+
+func (d itemMenuDelegate) Height() int {return 1}
+func (d itemMenuDelegate) Spacing() int {return 0}
+func (d itemMenuDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd {return nil}
+func (d itemMenuDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item){
+	i, ok := listItem.(itemMenu)
+	if !ok {
+		return
+	}
+	str := fmt.Sprintf("%d. %s", index+1, i.button.Title)
+	fn := d.styles.ListItemStyle.CardStyle.Render
+	if index == m.Index(){
+		fn = func(s ...string) string {
+			selectedStyle := d.styles.ListItemStyle.SelectedStyle.Width(len(i.button.Title)+5)
+			return selectedStyle.Render(s...)
+		}
+	}
+	fmt.Fprint(w,fn(str))
+
 }
 
 func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
@@ -31,9 +67,31 @@ func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
 		},
 	}
 
+	items := make([]list.Item, len(options))
+
+	for i, buttonOption := range options {
+		newItemButton := itemMenu{
+			button: buttonOption,
+		}
+		items[i] = newItemButton
+	} 
+
+	
+	delegate := itemMenuDelegate{styles: configManager.Styles }
+
+	l := list.New(items, delegate, 100, 10) // set it as (0,0) here and in the Update we dinamically change it
+	l.Title = "My Subscriptions"
+	l.Styles.Title = configManager.Styles.TitleStyle.TitleStyle.Margin(0)
+	l.SetShowStatusBar(false)
+	l.SetShowHelp(false)
+
+
 	return MainMenuModel{
-		title: "Welcome to DetoxTube",
 		options: options,
+		list: l,
+		footer: InitialFooterModel(configManager),
+		configManger: configManager,
+
 	}
 }
 
@@ -43,57 +101,37 @@ func (m MainMenuModel) Init() tea.Cmd{
 
 func (m MainMenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd){
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		m.height = msg.Height
+		m.list.SetSize(msg.Width, len(m.list.Items())+5)
+		return m, nil
 
-	case tea.Model:
-		return msg, msg.Init()
-
-		case tea.KeyPressMsg:
-			switch msg.String() {
-			
-			case "ctrl+c", "q":
+	case tea.KeyPressMsg:
+		switch msg.String(){
+			case "q", "esc":
 				return m, tea.Quit
-			
-			case "up", "k":
-				if m.cursor > 0 {
-                m.cursor--
-            }
-
-			case "down", "j":
-            	if m.cursor < len(m.options)-1 {
-                	m.cursor++
-            }
-
-			case "enter", "space":
-			currentVideo := m.options[m.cursor]
-
-			return currentVideo.Redirect, nil
-
-			}
-
-		
+			case "enter":
+				if currentItem, ok := m.list.SelectedItem().(itemMenu); ok {
+					return currentItem.button.Redirect, nil
+				}
+		}
 	}
-	return m, nil
+
+	var cmd tea.Cmd
+	m.list, cmd = m.list.Update(msg)
+	return m,cmd
 }
 
-func (m MainMenuModel) View() tea.View{
-	title := m.title + "\n"
-
-	for i, choice := range m.options{
-		cursor := " "
-		
-		if m.cursor == i{
-			cursor = ">"
-		}
-
-		checked := " "
-
-		if _, ok := m.selected[i]; ok{
-			checked = "x"
-		}
-		title += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice.Title)
-	}
-	
-	view := tea.NewView(title)
-	view.AltScreen = true
-	return view
+func (m MainMenuModel) View() tea.View {
+    content := lipgloss.JoinVertical(
+        lipgloss.Left,
+        m.list.View(),
+        m.footer.View(),
+    )
+	fullView := m.configManger.Styles.Terminal.TerminalBackground.Width(m.width).Height(m.height).Render(content)
+    
+    view := tea.NewView(fullView)
+    view.AltScreen = true
+    return view
 }
