@@ -53,6 +53,7 @@ type SubscriptionsModel struct {
 	listStyle list.Styles
 	videoSort types.VideoSort
 	order 	types.Order
+	footer FooterModel
 }
 
 func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsModel{
@@ -80,7 +81,7 @@ func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsMo
 	styles := styles.NewEntryPoint()
 	delegate := itemDelegate{styles: &styles}
 
-	l := list.New(items, delegate,300,500)
+	l := list.New(items, delegate,300,20)
 	l.Title = "My Subscriptions"
 	l.Styles.Title = styles.TitleStyle.TitleStyle
 	l.Styles.PaginationStyle = l.Styles.PaginationStyle.Padding(0)
@@ -91,6 +92,7 @@ func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsMo
 		title: "My Subscriptions",
 		configManager: configManager,
 		list: l,
+		footer: InitialFooterModel(configManager),
 	}
 }
 
@@ -124,8 +126,7 @@ func (m SubscriptionsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m SubscriptionsModel) View() tea.View {
-    // No more manual loops!
-    view := tea.NewView("\n" + m.list.View())
+    view := tea.NewView(m.list.View() +  "\n" + m.footer.View())
 	view.AltScreen = true
 	return view
 }
