@@ -9,6 +9,7 @@ import (
 	config_loader "github.com/darthpedroo/detoxtube/core/config_loader"
 	videoLoader "github.com/darthpedroo/detoxtube/core/video_loader"
 	"github.com/darthpedroo/detoxtube/styles"
+	"github.com/darthpedroo/detoxtube/utils"
 
 	//"github.com/darthpedroo/detoxtube/core"
 	"github.com/darthpedroo/detoxtube/models"
@@ -17,10 +18,28 @@ import (
 
 func main(){
 
+	homePath , err  := utils.GetHome()
+
+	if err != nil {
+		utils.WriteLog(err.Error())
+		os.Exit(1)
+	}
+
+	err = utils.CreateConfigDir()
+
+	if err != nil {
+		utils.WriteLog(err.Error())
+
+	}
+	
+	configPath := homePath + "/.config/detoxtube/config.json"
+
+	utils.WriteLog(fmt.Sprintf("este es el path %v ", configPath))
+
 	configManager := core.ConfigManager{
 		VideoLoader: &videoLoader.GoFeedVideosLoader{},
 		ConfigLoader: &config_loader.JsonConfigLoader{},
-		ConfigPath: "config.json",
+		ConfigPath: configPath,
 		Styles: styles.NewEntryPoint(),
 	}
 

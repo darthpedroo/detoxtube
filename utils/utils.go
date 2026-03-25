@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"sort"
 	"strings"
-
+	"path/filepath"
 	"charm.land/bubbletea/v2"
 	"github.com/darthpedroo/detoxtube/types"
 )
@@ -58,4 +58,62 @@ func SortSubscriptions(subscriptions []types.Channel, videoSort types.VideoSort,
     } else {
 		return subscriptions
 	}
+}
+
+func GetHome()(string, error){
+
+	dirname, err := os.UserHomeDir()
+    if err != nil {
+        return "", fmt.Errorf("Error getting Home directory %s",err)
+    }
+
+	return dirname, nil
+}
+
+func SeedConfig(configPath string) error {
+	data , _ := os.ReadFile("config_template.json")
+	configFile := configPath + "/config.json"
+    err := os.WriteFile(configFile, data, 0644)
+	
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func CreateConfigDir() error{
+
+	home , err := GetHome()
+	if err != nil {
+		return err
+	}
+
+	configDirectory := home + "/.config/detoxtube"
+	err = os.Mkdir(configDirectory,0777)
+
+	if err != nil {
+		return err
+	}
+	
+	err = SeedConfig(configDirectory)
+	
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
+
+func WriteLog(message string){
+	d1 := []byte(fmt.Sprintf("%s\n", message))
+	path1 := filepath.Join("logs", "dat1.txt")
+	data , _ := os.ReadFile(path1)
+
+	data = append(data, d1...)
+	
+    _ = os.WriteFile(path1, data, 0644)
 }
