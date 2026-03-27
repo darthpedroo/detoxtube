@@ -125,7 +125,7 @@ func (m FeedModel) View() tea.View {
         if m.cursor == i {
             style = m.configManager.Styles.ListItemStyle.SelectedStyle
         }
-        cardContent := fmt.Sprintf("%v) %s",i+1, video.Title)
+        cardContent := fmt.Sprintf("%v) %s %s",i+1, video.Title, utils.FormatRelativeTime(video.PublishedDate))
         doc.WriteString(style.Render(cardContent)+"\n")
     }
 

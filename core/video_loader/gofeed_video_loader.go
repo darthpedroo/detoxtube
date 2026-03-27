@@ -28,7 +28,9 @@ func (g *GoFeedVideosLoader) LoadVideos(feed *gofeed.Feed, maxVideos int) ([]typ
 	for _, item := range feed.Items {
 		newVideo := types.Video{
 			item.Title,
-			item.Link}
+			item.Link,
+			item.Published,
+		}
 		fetchedVideos = append(fetchedVideos, newVideo)
 		loadedViedos += 1
 		if loadedViedos == maxVideos {

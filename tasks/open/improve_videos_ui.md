@@ -2,4 +2,4 @@
 
 - [x] Use component from bubble
 - [] Show duration
-- [] Show published date
+- [x] Show published date

@@ -2,7 +2,7 @@
     "VideoPlayer": "mpv",
     "Channels": [
         {
-            "ChannelName": "Lawrence Systems",
+            "ChannelName": "Lawrence Systemsa",
             "FeedUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHkYOD-3fZbuGhwsADBd9ZQ"
         }
     ]

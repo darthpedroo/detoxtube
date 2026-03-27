@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"sort"
 	"strings"
-	"path/filepath"
+	"time"
+
 	"charm.land/bubbletea/v2"
 	"github.com/darthpedroo/detoxtube/types"
 )
@@ -106,7 +108,51 @@ func CreateConfigDir() error{
 	return nil
 }
 
+func FormatRelativeTime(input string) string {
+    past, err := time.Parse(time.RFC3339, input)
+    if err != nil {
+        return "invalid date"
+    }
 
+    diff := time.Since(past)
+    days := int(diff.Hours() / 24)
+
+    switch {
+    case days < 1:
+        hours := int(diff.Hours())
+        if hours == 1 {
+            return "1 hour ago"
+        }
+        return fmt.Sprintf("%d hours ago", hours)
+
+    case days < 7:
+        if days == 1 {
+            return "1 day ago"
+        }
+        return fmt.Sprintf("%d days ago", days)
+
+    case days < 30:
+        weeks := days / 7
+        if weeks == 1 {
+            return "1 week ago"
+        }
+        return fmt.Sprintf("%d weeks ago", weeks)
+
+    case days < 365:
+        months := days / 30 
+        if months == 1 {
+            return "1 month ago"
+        }
+        return fmt.Sprintf("%d months ago", months)
+
+    default:
+        years := days / 365
+        if years == 1 {
+            return "1 year ago"
+        }
+        return fmt.Sprintf("%d years ago", years)
+    }
+}
 
 func WriteLog(message string){
 	d1 := []byte(fmt.Sprintf("%s\n", message))
