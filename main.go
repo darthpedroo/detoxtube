@@ -32,7 +32,7 @@ func main() {
 	}
 
 	configPath := homePath + "/.config/detoxtube/config.json"
-	configPath = "config.json"
+	//configPath = "config.json"
 	utils.WriteLog(fmt.Sprintf("este es el path %v ", configPath))
 
 	configManager := core.ConfigManager{
