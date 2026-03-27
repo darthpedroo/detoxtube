@@ -13,14 +13,12 @@ import (
 	"github.com/darthpedroo/detoxtube/types"
 )
 
-
-
 type MainMenuModel struct {
-	options []types.Button
-	list list.Model
-	footer FooterModel
-	width int
-	height int
+	options      []types.Button
+	list         list.Model
+	footer       FooterModel
+	width        int
+	height       int
 	configManger core.ConfigManager
 }
 
@@ -28,49 +26,47 @@ type itemMenu struct {
 	button types.Button
 }
 
-func (i itemMenu) FilterValue() string {return i.button.Title}
+func (i itemMenu) FilterValue() string { return i.button.Title }
 
 type itemMenuDelegate struct {
 	styles styles.EntryPoint
 }
 
-func (d itemMenuDelegate) Height() int {return 1}
-func (d itemMenuDelegate) Spacing() int {return 0}
-func (d itemMenuDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd {return nil}
-func (d itemMenuDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item){
+func (d itemMenuDelegate) Height() int                             { return 1 }
+func (d itemMenuDelegate) Spacing() int                            { return 0 }
+func (d itemMenuDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
+func (d itemMenuDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
 	i, ok := listItem.(itemMenu)
 	if !ok {
 		return
 	}
 	str := fmt.Sprintf("%d. %s", index+1, i.button.Title)
 	fn := d.styles.ListItemStyle.CardStyle.Render
-	if index == m.Index(){
+	if index == m.Index() {
 		fn = func(s ...string) string {
-			selectedStyle := d.styles.ListItemStyle.SelectedStyle.Width(len(i.button.Title)+5)
+			selectedStyle := d.styles.ListItemStyle.SelectedStyle.Width(len(i.button.Title) + 5)
 			return selectedStyle.Render(s...)
 		}
 	}
-	fmt.Fprint(w,fn(str))
+	fmt.Fprint(w, fn(str))
 
 }
 
-func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
-	
-	options:= []types.Button{
+func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel {
+
+	options := []types.Button{
 		{
-			Title: "Subscriptions",
+			Title:    "Subscriptions",
 			Redirect: InitialSubscriptionsModel(configManager),
 		},
 		{
-			Title: "Recent Videos",
+			Title:    "Recent Videos",
 			Redirect: InitialRecentVideosModel(configManager),
 		},
 		{
-			Title: "Load RSS Feed",
+			Title:    "Load RSS Feed",
 			Redirect: InitialLoadRssFeedModel(configManager),
 		},
-		
-		
 	}
 
 	items := make([]list.Item, len(options))
@@ -80,10 +76,9 @@ func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
 			button: buttonOption,
 		}
 		items[i] = newItemButton
-	} 
+	}
 
-	
-	delegate := itemMenuDelegate{styles: configManager.Styles }
+	delegate := itemMenuDelegate{styles: configManager.Styles}
 
 	l := list.New(items, delegate, 100, 10) // set it as (0,0) here and in the Update we dinamically change it
 	l.Title = "Welcome to Detoxtube"
@@ -91,21 +86,19 @@ func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
 
-
 	return MainMenuModel{
-		options: options,
-		list: l,
-		footer: InitialFooterModel(configManager),
+		options:      options,
+		list:         l,
+		footer:       InitialFooterModel(configManager),
 		configManger: configManager,
-
 	}
 }
 
-func (m MainMenuModel) Init() tea.Cmd{
+func (m MainMenuModel) Init() tea.Cmd {
 	return nil
 }
 
-func (m MainMenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd){
+func (m MainMenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
@@ -114,30 +107,30 @@ func (m MainMenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd){
 		return m, nil
 
 	case tea.KeyPressMsg:
-		switch msg.String(){
-			case "q", "esc":
-				return m, tea.Quit
-			case "enter":
-				if currentItem, ok := m.list.SelectedItem().(itemMenu); ok {
-					return currentItem.button.Redirect, nil
-				}
+		switch msg.String() {
+		case "q", "esc":
+			return m, tea.Quit
+		case "enter":
+			if currentItem, ok := m.list.SelectedItem().(itemMenu); ok {
+				return currentItem.button.Redirect, nil
+			}
 		}
 	}
 
 	var cmd tea.Cmd
 	m.list, cmd = m.list.Update(msg)
-	return m,cmd
+	return m, cmd
 }
 
 func (m MainMenuModel) View() tea.View {
-    content := lipgloss.JoinVertical(
-        lipgloss.Left,
-        m.list.View(),
-        m.footer.View(),
-    )
+	content := lipgloss.JoinVertical(
+		lipgloss.Left,
+		m.list.View(),
+		m.footer.View(),
+	)
 	fullView := m.configManger.Styles.Terminal.TerminalBackground.Width(m.width).Height(m.height).Render(content)
-    
-    view := tea.NewView(fullView)
-    view.AltScreen = true
-    return view
+
+	view := tea.NewView(fullView)
+	view.AltScreen = true
+	return view
 }

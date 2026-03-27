@@ -28,17 +28,16 @@ var (
 
 type LoadRssFeedModel struct {
 	configManager core.ConfigManager
-	focusIndex int
-	inputs     []textinput.Model
-	cursorMode cursor.Mode
-	err error
-	quitting   bool
-
+	focusIndex    int
+	inputs        []textinput.Model
+	cursorMode    cursor.Mode
+	err           error
+	quitting      bool
 }
 
-func InitialLoadRssFeedModel(configManager core.ConfigManager) LoadRssFeedModel{
+func InitialLoadRssFeedModel(configManager core.ConfigManager) LoadRssFeedModel {
 	m := LoadRssFeedModel{
-		inputs: make([]textinput.Model, 2),
+		inputs:        make([]textinput.Model, 2),
 		configManager: configManager,
 	}
 
@@ -70,7 +69,7 @@ func InitialLoadRssFeedModel(configManager core.ConfigManager) LoadRssFeedModel{
 	return m
 }
 
-func (m LoadRssFeedModel) Init() tea.Cmd{
+func (m LoadRssFeedModel) Init() tea.Cmd {
 	return textinput.Blink
 }
 
@@ -98,7 +97,7 @@ func (m LoadRssFeedModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 				newChannel := types.Channel{
 					ChannelName: channelName.Value(),
-					FeedUrl: fixedChannelId,
+					FeedUrl:     fixedChannelId,
 				}
 
 				err := m.configManager.ConfigLoader.AddChannel(m.configManager.ConfigPath, newChannel)
@@ -175,9 +174,9 @@ func (m LoadRssFeedModel) View() tea.View {
 	}
 
 	if m.err != nil {
-        errorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("196")).Bold(true)
-        fmt.Fprintf(&b, "\n\n%s", errorStyle.Render("Error: "+m.err.Error()))
-    }
+		errorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("196")).Bold(true)
+		fmt.Fprintf(&b, "\n\n%s", errorStyle.Render("Error: "+m.err.Error()))
+	}
 
 	button := &blurredButton
 	if m.focusIndex == len(m.inputs) {
@@ -194,8 +193,6 @@ func (m LoadRssFeedModel) View() tea.View {
 	view.AltScreen = true
 	return view
 }
-
-
 
 func (m LoadRssFeedModel) headerView() string { return "Enter the channelid to load a RSS FEED?\n" }
 func (m LoadRssFeedModel) footerView() string { return "\n(esc to quit)" }

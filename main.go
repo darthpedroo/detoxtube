@@ -15,10 +15,9 @@ import (
 	"github.com/darthpedroo/detoxtube/models"
 )
 
+func main() {
 
-func main(){
-
-	homePath , err  := utils.GetHome()
+	homePath, err := utils.GetHome()
 
 	if err != nil {
 		utils.WriteLog(err.Error())
@@ -31,21 +30,21 @@ func main(){
 		utils.WriteLog(err.Error())
 
 	}
-	
+
 	configPath := homePath + "/.config/detoxtube/config.json"
-	//configPath = "config.json"
+	configPath = "config.json"
 	utils.WriteLog(fmt.Sprintf("este es el path %v ", configPath))
 
 	configManager := core.ConfigManager{
-		VideoLoader: &videoLoader.GoFeedVideosLoader{},
+		VideoLoader:  &videoLoader.GoFeedVideosLoader{},
 		ConfigLoader: &config_loader.JsonConfigLoader{},
-		ConfigPath: configPath,
-		Styles: styles.NewEntryPoint(),
+		ConfigPath:   configPath,
+		Styles:       styles.NewEntryPoint(),
 	}
 
 	p := tea.NewProgram(models.InitialMainMenuModel(configManager))
-	if _, err := p.Run(); err != nil{
+	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
-        os.Exit(1)
+		os.Exit(1)
 	}
 }

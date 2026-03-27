@@ -6,15 +6,15 @@ type TitleStyle struct {
 	TitleStyle lipgloss.Style
 }
 
-func NewTitleStyle() *TitleStyle{
+func NewTitleStyle() *TitleStyle {
 
 	titleStyle := lipgloss.NewStyle().
-        Blink(true).
-        Bold(true).
+		Blink(true).
+		Bold(true).
 		MarginLeft(2).
 		Padding(0)
 
 	return &TitleStyle{
 		TitleStyle: titleStyle,
 	}
-} 
+}

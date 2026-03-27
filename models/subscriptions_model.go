@@ -13,11 +13,11 @@ import (
 	"github.com/darthpedroo/detoxtube/utils"
 )
 
-type itemChannel struct{
+type itemChannel struct {
 	channel types.Channel
 }
 
-func (c itemChannel) FilterValue() string { return c.channel.ChannelName}
+func (c itemChannel) FilterValue() string { return c.channel.ChannelName }
 
 type itemDelegate struct {
 	styles styles.EntryPoint
@@ -37,7 +37,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	fn := d.styles.ListItemStyle.CardStyle.Render
 	if index == m.Index() {
 		fn = func(s ...string) string {
-			selectedStyle := d.styles.ListItemStyle.SelectedStyle.Width(len(i.channel.ChannelName)+5)
+			selectedStyle := d.styles.ListItemStyle.SelectedStyle.Width(len(i.channel.ChannelName) + 5)
 			return selectedStyle.Render(s...)
 		}
 	}
@@ -45,23 +45,22 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	fmt.Fprint(w, fn(str))
 }
 
-
 type SubscriptionsModel struct {
 	configManager core.ConfigManager
-	title string
-	list list.Model
-	videoSort types.VideoSort
-	order 	types.Order
-	footer FooterModel
+	title         string
+	list          list.Model
+	videoSort     types.VideoSort
+	order         types.Order
+	footer        FooterModel
 }
 
-func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsModel{
-	
-	config , err := configManager.ConfigLoader.LoadConfig(configManager.ConfigPath)
+func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsModel {
+
+	config, err := configManager.ConfigLoader.LoadConfig(configManager.ConfigPath)
 
 	if err != nil {
 		return SubscriptionsModel{
-			title: fmt.Sprintf("Error loading Config %v", err),
+			title:         fmt.Sprintf("Error loading Config %v", err),
 			configManager: configManager,
 		}
 	}
@@ -69,7 +68,7 @@ func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsMo
 	items := make([]list.Item, len(config.Channels))
 
 	sortedSubscriptions := utils.SortSubscriptions(config.Channels, types.Alphabetically, types.Ascendant)
-	
+
 	for i, channel := range sortedSubscriptions {
 		newItemChannel := itemChannel{
 			channel: channel,
@@ -79,7 +78,7 @@ func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsMo
 
 	delegate := itemDelegate{styles: configManager.Styles}
 
-	l := list.New(items, delegate,300,20)
+	l := list.New(items, delegate, 300, 20)
 	l.Title = "My Subscriptions"
 	l.Styles.Title = configManager.Styles.TitleStyle.TitleStyle.Margin(0)
 
@@ -88,44 +87,44 @@ func InitialSubscriptionsModel(configManager core.ConfigManager) SubscriptionsMo
 	l.SetShowStatusBar(false)
 
 	return SubscriptionsModel{
-		title: "My Subscriptions",
+		title:         "My Subscriptions",
 		configManager: configManager,
-		list: l,
-		footer: InitialFooterModel(configManager),
+		list:          l,
+		footer:        InitialFooterModel(configManager),
 	}
 }
 
-func (m SubscriptionsModel) Init() tea.Cmd{
+func (m SubscriptionsModel) Init() tea.Cmd {
 	return nil
 }
 
 func (m SubscriptionsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    switch msg := msg.(type) {
-    case tea.WindowSizeMsg:
-        m.list.SetSize(msg.Width, msg.Height)
-        return m, nil
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.list.SetSize(msg.Width, msg.Height)
+		return m, nil
 
-    case tea.KeyPressMsg:
-        switch msg.String() {
-        case "ctrl+c", "q":
-            return m, tea.Quit
-        case "enter":
-            // Get the selected item from the list model
-            if c, ok := m.list.SelectedItem().(itemChannel); ok {
-                return InitialFeedModel(m.configManager, c.channel.FeedUrl), nil
-            }
-        case "shift+left":
-            return InitialMainMenuModel(m.configManager), nil
-        }
-    }
+	case tea.KeyPressMsg:
+		switch msg.String() {
+		case "ctrl+c", "q":
+			return m, tea.Quit
+		case "enter":
+			// Get the selected item from the list model
+			if c, ok := m.list.SelectedItem().(itemChannel); ok {
+				return InitialFeedModel(m.configManager, c.channel.FeedUrl), nil
+			}
+		case "shift+left":
+			return InitialMainMenuModel(m.configManager), nil
+		}
+	}
 
-    var cmd tea.Cmd
-    m.list, cmd = m.list.Update(msg) 
-    return m, cmd
+	var cmd tea.Cmd
+	m.list, cmd = m.list.Update(msg)
+	return m, cmd
 }
 
 func (m SubscriptionsModel) View() tea.View {
-    view := tea.NewView(m.list.View()+ "\n" + m.footer.View())
+	view := tea.NewView(m.list.View() + "\n" + m.footer.View())
 	view.AltScreen = true
 	return view
 }

@@ -4,7 +4,7 @@ type VideoSort string
 
 const (
 	Alphabetically VideoSort = "Alphabetically"
-	Date VideoSort = "Date"
+	Date           VideoSort = "Date"
 )
 
 func (s VideoSort) String() string {
@@ -21,7 +21,7 @@ func (s VideoSort) String() string {
 type Order string
 
 const (
-	Ascendant Order = "Ascendant"
+	Ascendant  Order = "Ascendant"
 	Descending Order = "Descending"
 )
 

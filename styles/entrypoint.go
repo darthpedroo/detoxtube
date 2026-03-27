@@ -1,18 +1,18 @@
 package styles
 
-type EntryPoint struct{
+type EntryPoint struct {
 	ListItemStyle ListItemStyle
-	TitleStyle  TitleStyle
-	Footer 	FooterStyle
-	Terminal TerminalStyle
+	TitleStyle    TitleStyle
+	Footer        FooterStyle
+	Terminal      TerminalStyle
 }
 
-func NewEntryPoint() EntryPoint{
-	
+func NewEntryPoint() EntryPoint {
+
 	return EntryPoint{
 		ListItemStyle: *NewListItemStyle(),
-		TitleStyle: *NewTitleStyle(),
-		Footer: *NewFooterStyle(),
-		Terminal: *NewTerminalStyle(),
+		TitleStyle:    *NewTitleStyle(),
+		Footer:        *NewFooterStyle(),
+		Terminal:      *NewTerminalStyle(),
 	}
 }

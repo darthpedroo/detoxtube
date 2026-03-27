@@ -1,8 +1,8 @@
 package types
 
 type Video struct {
-	Title string
-	Link  string
+	Title         string
+	Link          string
 	PublishedDate string
-	Author string
+	Author        string
 }

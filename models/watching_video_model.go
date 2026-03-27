@@ -11,28 +11,28 @@ type WatchingVideoModel struct {
 	configManager core.ConfigManager
 }
 
-func InitialWatchingVideoModel(configManager core.ConfigManager) WatchingVideoModel{
+func InitialWatchingVideoModel(configManager core.ConfigManager) WatchingVideoModel {
 	return WatchingVideoModel{
 		configManager: configManager,
 	}
 }
 
-func (m WatchingVideoModel) Init() tea.Cmd{
+func (m WatchingVideoModel) Init() tea.Cmd {
 	return nil
 }
 
-func (m WatchingVideoModel) Update(msg tea.Msg) (tea.Model, tea.Cmd){
+func (m WatchingVideoModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-		case tea.KeyPressMsg:
-			switch msg.String() {
-			case "q":
-				return InitialMainMenuModel(m.configManager), tea.ClearScreen
-			}
+	case tea.KeyPressMsg:
+		switch msg.String() {
+		case "q":
+			return InitialMainMenuModel(m.configManager), tea.ClearScreen
+		}
 	}
 	return m, nil
 }
 
-func (m WatchingVideoModel) View() tea.View{
+func (m WatchingVideoModel) View() tea.View {
 	title := "You are currently watching a Video! Press 'q' to go back"
 	view := tea.NewView(title)
 	view.AltScreen = true

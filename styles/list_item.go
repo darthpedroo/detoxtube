@@ -3,24 +3,23 @@ package styles
 import "charm.land/lipgloss/v2"
 
 type ListItemStyle struct {
-
-	CardStyle lipgloss.Style
+	CardStyle     lipgloss.Style
 	SelectedStyle lipgloss.Style
-	Width int
+	Width         int
 }
 
-func NewListItemStyle() *ListItemStyle{
+func NewListItemStyle() *ListItemStyle {
 
 	cardStyle := lipgloss.NewStyle().
-	Foreground(ColorPrimary).
-	Background(ColorBg).
-	MarginLeft(2)
+		Foreground(ColorPrimary).
+		Background(ColorBg).
+		MarginLeft(2)
 
 	selectedStyle := cardStyle.
-	Background(ColorSelected)
-	
+		Background(ColorSelected)
+
 	return &ListItemStyle{
-		CardStyle: cardStyle,
+		CardStyle:     cardStyle,
 		SelectedStyle: selectedStyle,
 	}
-} 
+}

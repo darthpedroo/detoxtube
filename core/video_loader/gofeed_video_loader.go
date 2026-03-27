@@ -13,7 +13,7 @@ func (g *GoFeedVideosLoader) LoadFeed(feedUrl string) (*gofeed.Feed, error) {
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseURL(feedUrl)
 	if err != nil {
-		return nil, fmt.Errorf("Error loading videos with gofeed %v" , err)
+		return nil, fmt.Errorf("Error loading videos with gofeed %v", err)
 	}
 	return feed, nil
 }
