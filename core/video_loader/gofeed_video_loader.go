@@ -30,6 +30,7 @@ func (g *GoFeedVideosLoader) LoadVideos(feed *gofeed.Feed, maxVideos int) ([]typ
 			item.Title,
 			item.Link,
 			item.Published,
+			item.Author.Name,
 		}
 		fetchedVideos = append(fetchedVideos, newVideo)
 		loadedViedos += 1

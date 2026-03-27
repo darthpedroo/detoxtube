@@ -62,9 +62,15 @@ func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
 			Redirect: InitialSubscriptionsModel(configManager),
 		},
 		{
+			Title: "Recent Videos",
+			Redirect: InitialRecentVideosModel(configManager),
+		},
+		{
 			Title: "Load RSS Feed",
 			Redirect: InitialLoadRssFeedModel(configManager),
 		},
+		
+		
 	}
 
 	items := make([]list.Item, len(options))
@@ -80,7 +86,7 @@ func InitialMainMenuModel(configManager core.ConfigManager) MainMenuModel{
 	delegate := itemMenuDelegate{styles: configManager.Styles }
 
 	l := list.New(items, delegate, 100, 10) // set it as (0,0) here and in the Update we dinamically change it
-	l.Title = "My Subscriptions"
+	l.Title = "Welcome to Detoxtube"
 	l.Styles.Title = configManager.Styles.TitleStyle.TitleStyle.Margin(0)
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)

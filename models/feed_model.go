@@ -103,7 +103,7 @@ func (m FeedModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				utils.OpenInNewTerminal(InitialWatchingVideoModel(m.configManager), "mpv", currentVideo.Link),
 			)
         
-        case "left":
+        case "shift+left":
             return InitialSubscriptionsModel(m.configManager), nil
         }
     }

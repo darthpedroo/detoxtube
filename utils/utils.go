@@ -62,6 +62,33 @@ func SortSubscriptions(subscriptions []types.Channel, videoSort types.VideoSort,
 	}
 }
 
+func SortVideos(videos []types.Video, videoSort types.VideoSort, order types.Order) (sortedVideos []types.Video){
+
+    if videoSort == types.Alphabetically {
+        sort.Slice(videos, func(i, j int) bool {
+            titleI := strings.ToLower(videos[i].Title)
+            titleJ := strings.ToLower(videos[j].Title)
+            
+            if order == types.Descending {
+                return titleI > titleJ
+            }
+            return titleI < titleJ
+        })
+
+		return videos
+    } else if videoSort == types.Date {
+    sort.Slice(videos, func(i, j int) bool {
+        if order == types.Descending {
+            return videos[i].PublishedDate > videos[j].PublishedDate
+        }
+        return videos[i].PublishedDate < videos[j].PublishedDate
+    })
+    return videos
+	} else {
+        return videos
+    }
+}
+
 func GetHome()(string, error){
 
 	dirname, err := os.UserHomeDir()

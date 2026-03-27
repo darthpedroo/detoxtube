@@ -114,7 +114,7 @@ func (m SubscriptionsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
             if c, ok := m.list.SelectedItem().(itemChannel); ok {
                 return InitialFeedModel(m.configManager, c.channel.FeedUrl), nil
             }
-        case "left":
+        case "shift+left":
             return InitialMainMenuModel(m.configManager), nil
         }
     }
