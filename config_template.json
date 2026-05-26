@@ -1,5 +1,5 @@
 {
-    "VideoPlayer": "mpv",
+    "VideoPlayer": "/usr/bin/mpv",
     "Channels": [
         {
             "ChannelName": "Lawrence Systemsa",

@@ -9,9 +9,21 @@ import (
 	"strings"
 	"time"
 
-	"charm.land/bubbletea/v2"
+	tea "charm.land/bubbletea/v2"
 	"github.com/darthpedroo/detoxtube/types"
 )
+
+func OpenMPV(url string) tea.Cmd {
+	return func() tea.Msg {
+		cmd := exec.Command("sh", "-c", "nohup mpv '"+url+"' >/dev/null 2>&1 &")
+
+		if err := cmd.Run(); err != nil {
+			return err
+		}
+
+		return nil
+	}
+}
 
 func OpenApp(returnModel tea.Model, app string, args ...string) tea.Cmd {
 	return func() tea.Msg {
@@ -28,7 +40,9 @@ func OpenInNewTerminal(returnModel tea.Model, app string, args ...string) tea.Cm
 		var cmd *exec.Cmd
 
 		fullArgs := append([]string{"--detach", app}, args...)
-		cmd = exec.Command("kitty", fullArgs...)
+		// cmd = exec.Command("kitty", fullArgs...)
+
+		cmd = exec.Command("mpv", fullArgs...)
 
 		// We don't use Stdin/Stdout here because the new terminal handles its own IO
 		_ = cmd.Start()

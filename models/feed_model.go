@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"charm.land/bubbletea/v2"
+	tea "charm.land/bubbletea/v2"
 	core "github.com/darthpedroo/detoxtube/core"
 	"github.com/darthpedroo/detoxtube/types"
 	"github.com/darthpedroo/detoxtube/utils"
@@ -98,9 +98,7 @@ func (m FeedModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// for the item that the cursor is pointing at.
 		case "enter", "space":
 			currentVideo := m.videos[m.cursor]
-			return m, tea.Batch(
-				utils.OpenInNewTerminal(InitialWatchingVideoModel(m.configManager), "mpv", currentVideo.Link),
-			)
+			return m, utils.OpenMPV(currentVideo.Link)
 
 		case "shift+left":
 			return InitialSubscriptionsModel(m.configManager), nil
